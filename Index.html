@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>शरारती बंदर मोनू और जंगल का सबक</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Baloo 2', cursive;
+            background-color: #f0fdf4; /* Light green bg */
+            overflow-x: hidden;
+        }
+
+        .book-shadow {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .page-transition {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        .fade-enter {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .emoji-scene {
+            font-size: 6rem;
+            line-height: 1;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+            animation: bounce 3s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-5%); }
+            50% { transform: translateY(5%); }
+        }
+
+        /* Specific animations for specific scenes */
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+        .btn-hover:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="bg-green-100 h-screen flex flex-col items-center justify-center text-gray-800">
+
+    <!-- Decorative Background Elements -->
+    <div class="fixed top-0 left-0 text-6xl opacity-10 pointer-events-none">🌿</div>
+    <div class="fixed bottom-0 right-0 text-6xl opacity-10 pointer-events-none">🌴</div>
+    <div class="fixed top-10 right-10 text-4xl opacity-10 pointer-events-none">🦜</div>
+    <div class="fixed bottom-10 left-10 text-4xl opacity-10 pointer-events-none">🐒</div>
+
+    <!-- Main Book Container -->
+    <div class="relative w-full max-w-4xl px-4 flex flex-col items-center">
+        
+        <!-- Book Frame -->
+        <div class="bg-white w-full rounded-3xl book-shadow overflow-hidden border-4 border-green-800 relative min-h-[500px] md:min-h-[600px] flex flex-col md:flex-row">
+            
+            <!-- Left Side (Visuals) -->
+            <div class="w-full md:w-1/2 bg-green-50 flex items-center justify-center p-8 border-b-4 md:border-b-0 md:border-r-4 border-green-100 relative overflow-hidden">
+                <div id="scene-bg" class="absolute inset-0 opacity-20 bg-cover bg-center transition-all duration-500"></div>
+                <div id="page-visual" class="emoji-scene z-10 text-center transition-all duration-500 transform">
+                    <!-- Dynamic Emoji Content -->
+                </div>
+            </div>
+
+            <!-- Right Side (Text) -->
+            <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-between relative">
+                
+                <!-- Page Number -->
+                <div class="absolute top-4 right-6 text-green-600 font-bold text-lg">
+                    पृष्ठ <span id="page-num">1</span>/<span id="total-pages">8</span>
+                </div>
+
+                <!-- Content Area -->
+                <div class="flex-grow flex flex-col justify-center">
+                    <h2 id="page-title" class="text-2xl md:text-3xl font-bold text-green-900 mb-4 leading-tight"></h2>
+                    <p id="page-text" class="text-lg md:text-xl text-gray-700 leading-relaxed"></p>
+                </div>
+
+                <!-- Navigation Controls (Desktop/Inside Book) -->
+                <div class="mt-8 flex justify-between items-center">
+                    <button onclick="prevPage()" id="btn-prev" class="btn-hover flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i> पिछला
+                    </button>
+                    
+                    <button onclick="nextPage()" id="btn-next" class="btn-hover flex items-center gap-2 px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-full font-bold shadow-lg transition-colors">
+                        अगला <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Swipe Hint -->
+        <div class="mt-4 text-green-700 text-sm md:hidden animate-pulse">
+            पन्ना पलटने के लिए स्वाइप करें (Swipe) ↔️
+        </div>
+
+    </div>
+
+    <script>
+        // Story Data
+        const storyPages = [
+            {
+                title: "शरारती बंदर मोनू और जंगल का सबक",
+                text: "एक बहुत घना और हरा-भरा जंगल था। वहाँ सब शांत था, लेकिन मोनू बंदर अपनी शरारतों से सबकी नाक में दम किए रहता था।",
+                visual: "🐒🌳🦜",
+                bgClass: "bg-green-200"
+            },
+            {
+                title: "मोनू की शरारतें",
+                text: "वह कभी हाथी के सिर पर कूदता, कभी खरगोश की गाजर छीन लेता, तो कभी तोते की नकल उतारता। वह कहता, 'मैं सबसे तेज़ और होशियार हूँ!'",
+                visual: "🐘🥕🐇",
+                bgClass: "bg-yellow-100"
+            },
+            {
+                title: "जानवर हुए परेशान",
+                text: "हिरण ने समझाया, कछुए ने भी कहा कि हमें दुख होता है। लेकिन मोनू किसी की नहीं सुनता था। वह बस अपनी ही धुन में मस्त रहता था।",
+                visual: "🐢🦌😔",
+                bgClass: "bg-orange-100"
+            },
+            {
+                title: "तूफान आया",
+                text: "एक दिन जंगल में भयानक आँधी और बारिश आई। सब जानवर छिप गए, लेकिन मोनू एक ऊँचे पेड़ पर चढ़कर चिल्लाने लगा, 'मैं नहीं डरता!'",
+                visual: "⛈️🌪️🌩️",
+                bgClass: "bg-gray-300",
+                animation: "shake"
+            },
+            {
+                title: "मुसीबत में मोनू",
+                text: "अचानक—क्रैक! डाल टूट गई। मोनू नीचे लटक गया। उसकी जान हलक में आ गई। उसने मदद के लिए आवाज़ लगाई, 'बचाओ! कोई है?'",
+                visual: "🪵🆘😱",
+                bgClass: "bg-red-100",
+                animation: "shake"
+            },
+            {
+                title: "सच्चे दोस्त",
+                text: "जिनका उसने मज़ाक उड़ाया था, वही मदद को आए। हाथी ने सूँड बढ़ाई, खरगोश रस्सी लाया। सबने मिलकर मोनू को सुरक्षित बचा लिया।",
+                visual: "🐘🤝🐇🐢",
+                bgClass: "bg-blue-100"
+            },
+            {
+                title: "मोनू का पछतावा",
+                text: "बारिश थम गई। मोनू ने सिर झुकाकर माफ़ी माँगी। 'मैं गलत था। आपने मेरी जान बचाई।' हिरण मुस्कुराया, 'गलती मानना ही असली सीख है।'",
+                visual: "🙏😢❤️",
+                bgClass: "bg-purple-100"
+            },
+            {
+                title: "कहानी की सीख",
+                text: "उस दिन के बाद मोनू बदल गया। अब वह सबकी मदद करता है। याद रखो: दूसरों को नीचा दिखाकर कोई बड़ा नहीं बनता, ताकत एकता में है।",
+                visual: "🌈✨🍎",
+                bgClass: "bg-indigo-100"
+            }
+        ];
+
+        let currentPage = 0;
+
+        // Elements
+        const titleEl = document.getElementById('page-title');
+        const textEl = document.getElementById('page-text');
+        const visualEl = document.getElementById('page-visual');
+        const pageNumEl = document.getElementById('page-num');
+        const totalPagesEl = document.getElementById('total-pages');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const bgContainer = document.querySelector('.bg-green-50');
+
+        // Initialize
+        totalPagesEl.innerText = storyPages.length;
+        renderPage(0);
+        lucide.createIcons();
+
+        function renderPage(index) {
+            const page = storyPages[index];
+            
+            // Text Update with Fade Effect
+            titleEl.style.opacity = 0;
+            textEl.style.opacity = 0;
+            visualEl.style.opacity = 0;
+            visualEl.style.transform = "scale(0.8)";
+
+            setTimeout(() => {
+                titleEl.innerText = page.title;
+                textEl.innerText = page.text;
+                visualEl.innerText = page.visual;
+                pageNumEl.innerText = index + 1;
+                
+                // Animation logic
+                visualEl.className = "emoji-scene z-10 text-center transition-all duration-500 transform"; 
+                if(page.animation) {
+                    visualEl.classList.add(page.animation);
+                } else {
+                    visualEl.classList.add('bounce-slow'); // Default
+                }
+
+                // Background Color logic
+                bgContainer.className = `w-full md:w-1/2 flex items-center justify-center p-8 border-b-4 md:border-b-0 md:border-r-4 border-green-100 relative overflow-hidden transition-colors duration-500 ${page.bgClass}`;
+
+                // Fade In
+                titleEl.style.opacity = 1;
+                textEl.style.opacity = 1;
+                visualEl.style.opacity = 1;
+                visualEl.style.transform = "scale(1)";
+            }, 200);
+
+            // Button Logic
+            btnPrev.disabled = index === 0;
+            if (index === storyPages.length - 1) {
+                btnNext.innerHTML = 'फिर से पढ़ें <i data-lucide="rotate-ccw" class="w-5 h-5"></i>';
+                btnNext.classList.remove('bg-green-600', 'hover:bg-green-700');
+                btnNext.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            } else {
+                btnNext.innerHTML = 'अगला <i data-lucide="arrow-right" class="w-5 h-5"></i>';
+                btnNext.classList.add('bg-green-600', 'hover:bg-green-700');
+                btnNext.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            }
+            
+            // Re-render icons since we changed HTML content
+            setTimeout(() => lucide.createIcons(), 250);
+        }
+
+        function nextPage() {
+            if (currentPage < storyPages.length - 1) {
+                currentPage++;
+                renderPage(currentPage);
+            } else {
+                // Restart
+                currentPage = 0;
+                renderPage(currentPage);
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                renderPage(currentPage);
+            }
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowRight") nextPage();
+            if (e.key === "ArrowLeft") prevPage();
+        });
+
+        // Touch Navigation (Simple Swipe)
+        let touchstartX = 0;
+        let touchendX = 0;
+        const bookContainer = document.querySelector('.book-shadow');
+
+        bookContainer.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        bookContainer.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchendX < touchstartX - 50) nextPage();
+            if (touchendX > touchstartX + 50) prevPage();
+        }
+
+    </script>
+</body>
+</html>
+
