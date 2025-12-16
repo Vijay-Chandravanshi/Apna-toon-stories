@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>कथा वर्ल्ड - कहानियों का खजाना</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Baloo 2', cursive;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .font-english {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Reader Animations */
+        .emoji-scene {
+            animation: bounce 3s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-3%); }
+            50% { transform: translateY(3%); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer" onclick="showDashboard()">
+                    <div class="bg-indigo-600 text-white p-2 rounded-lg">
+                        <i data-lucide="book-open" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-indigo-900">कथा<span class="text-indigo-600">World</span></span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <button onclick="filterStories('all')" class="text-slate-600 hover:text-indigo-600 font-bold transition">होम</button>
+                    <button onclick="filterStories('Moral')" class="text-slate-600 hover:text-indigo-600 font-bold transition">नैतिक कहानियाँ</button>
+                    <button onclick="filterStories('Adventure')" class="text-slate-600 hover:text-indigo-600 font-bold transition">रोमांचक</button>
+                    <button onclick="filterStories('Fantasy')" class="text-slate-600 hover:text-indigo-600 font-bold transition">जादुई</button>
+                </div>
+
+                <!-- Search -->
+                <div class="hidden md:block relative">
+                    <input type="text" id="searchInput" placeholder="कहानी खोजें..." 
+                           class="pl-10 pr-4 py-2 border border-slate-200 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64 text-sm"
+                           onkeyup="handleSearch()">
+                    <i data-lucide="search" class="absolute left-3 top-2.5 text-slate-400 w-4 h-4"></i>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-slate-600 hover:text-indigo-600">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main App Container -->
+    <main id="app-container" class="min-h-screen pb-20">
+        <!-- Content injected via JS -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-indigo-900 text-white py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="font-bold text-lg mb-2">कथा World 🌍</p>
+            <p class="text-indigo-200 text-sm">बच्चों के लिए प्यारी और सीख देने वाली कहानियाँ।</p>
+            <div class="mt-4 text-indigo-400 text-xs">
+                © 2024 Katha World. Made with ❤️ for Kids.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA STORE ---
+        const stories = [
+            {
+                id: 1,
+                title: "शरारती बंदर मोनू",
+                category: "Moral",
+                readTime: "5 min",
+                emoji: "🐒",
+                color: "bg-green-100",
+                accent: "text-green-600",
+                desc: "जंगल में मोनू की शरारतों से सब परेशान थे, लेकिन एक तूफान ने उसे दोस्ती का मतलब सिखा दिया।",
+                pages: [
+                    { title: "शरारती बंदर", text: "घना जंगल था। सब शांत था, लेकिन मोनू बंदर अपनी शरारतों से सबकी नाक में दम किए रहता था।", visual: "🐒🌳" },
+                    { title: "मोनू की मस्ती", text: "वह हाथी को चिढ़ाता और खरगोश की गाजर छीन लेता। 'मैं सबसे तेज़ हूँ!' वह हँसता।", visual: "🐘🥕" },
+                    { title: "तूफान आया", text: "एक दिन जंगल में भयानक आँधी आई। मोनू पेड़ पर अटक गया। 'बचाओ!' वह चिल्लाया।", visual: "⛈️🌪️" },
+                    { title: "सच्चे दोस्त", text: "हाथी और खरगोश ने मिलकर उसे बचाया। मोनू को अपनी गलती का अहसास हुआ।", visual: "🐘🤝🐒" },
+                    { title: "सीख", text: "उस दिन के बाद मोनू बदल गया। दूसरों को नीचा दिखाकर कोई बड़ा नहीं बनता।", visual: "❤️🌈" }
+                ]
+            },
+            {
+                id: 2,
+                title: "प्यासा कौआ (नया अंदाज़)",
+                category: "Adventure",
+                readTime: "3 min",
+                emoji: "🦅",
+                color: "bg-blue-100",
+                accent: "text-blue-600",
+                desc: "एक समझदार कौआ जिसे प्यास लगी थी, उसने पानी पीने के लिए क्या नई तरकीब निकाली?",
+                pages: [
+                    { title: "गर्मी का दिन", text: "बहुत गर्मी थी। कालू कौआ पानी की तलाश में यहाँ-वहाँ भटक रहा था।", visual: "☀️🦅🥵" },
+                    { title: "घड़ा मिला", text: "उसे एक घड़ा दिखा, पर पानी बहुत नीचे था। उसकी चोंच वहाँ तक नहीं पहुँच पा रही थी।", visual: "🏺💧❌" },
+                    { title: "कंकड़ नहीं, स्ट्रॉ!", text: "कालू ने देखा पास ही बच्चे नारियल पानी पी रहे थे। उसे एक स्ट्रॉ (Pipe) मिली!", visual: "🥤💡" },
+                    { title: "दिमाग की बत्ती", text: "कालू ने स्ट्रॉ को घड़े में डाला और मज़े से पानी पी लिया। स्मार्ट कौआ!", visual: "🦅🥤✅" },
+                    { title: "सीख", text: "कड़ी मेहनत के साथ-साथ समझदारी (Smart Work) भी ज़रूरी है।", visual: "🧠✨" }
+                ]
+            },
+            {
+                id: 3,
+                title: "शेर और नन्हा चूहा",
+                category: "Moral",
+                readTime: "4 min",
+                emoji: "🦁",
+                color: "bg-orange-100",
+                accent: "text-orange-600",
+                desc: "जंगल का राजा शेर एक छोटे से चूहे के जाल में कैसे फँसा? और उसे किसने बचाया?",
+                pages: [
+                    { title: "सोया हुआ शेर", text: "एक शेर पेड़ के नीचे सो रहा था। एक चूहा गलती से उसकी नाक पर कूद गया।", visual: "🦁💤🐭" },
+                    { title: "शेर का गुस्सा", text: "शेर ने चूहे को पकड़ लिया। 'मुझे मत खाओ! मैं कभी तुम्हारे काम आऊँगा,' चूहा गिड़गिड़ाया।", visual: "🦁😠🙏" },
+                    { title: "जाल में शेर", text: "कुछ दिन बाद, शिकारियों ने शेर को जाल में फँसा लिया। शेर दहाड़ने लगा।", visual: "🕸️🦁🆘" },
+                    { title: "छोटा दोस्त", text: "चूहे ने अपने तेज़ दाँतों से जाल काट दिया। शेर आज़ाद हो गया।", visual: "🐭🦷✂️" },
+                    { title: "सीख", text: "कोई भी इतना छोटा नहीं होता कि वह मदद न कर सके। दया का बदला दया से मिलता है।", visual: "❤️🤝" }
+                ]
+            },
+            {
+                id: 4,
+                title: "जादुई पेंसिल",
+                category: "Fantasy",
+                readTime: "6 min",
+                emoji: "✏️",
+                color: "bg-purple-100",
+                accent: "text-purple-600",
+                desc: "सोनू को एक ऐसी पेंसिल मिली जिससे जो भी बनाओ, वह सच हो जाता था। फिर क्या हुआ?",
+                pages: [
+                    { title: "अनोखा उपहार", text: "सोनू को रास्ते में एक चमकती हुई पेंसिल मिली। उसने कागज़ पर एक सेब बनाया।", visual: "👦✨✏️" },
+                    { title: "जादू!", text: "अचानक, कागज़ से एक असली सेब बाहर आ गया! सोनू हैरान रह गया।", visual: "🍎😲✨" },
+                    { title: "मदद की शुरुआत", text: "सोनू ने गरीबों के लिए कपड़े और खाना बनाना शुरू किया। सब खुश थे।", visual: "👕🍱😊" },
+                    { title: "लालच बुरी बला", text: "एक चोर ने पेंसिल चुरा ली और सोने का पहाड़ बनाया, पर वह पहाड़ उस पर ही गिर गया!", visual: "💰🏔️⚠️" },
+                    { title: "सीख", text: "शक्ति का प्रयोग हमेशा दूसरों की भलाई के लिए करना चाहिए, लालच के लिए नहीं।", visual: "⚖️😇" }
+                ]
+            },
+            {
+                id: 5,
+                title: "कछुआ और खरगोश",
+                category: "Fables",
+                readTime: "4 min",
+                emoji: "🐢",
+                color: "bg-teal-100",
+                accent: "text-teal-600",
+                desc: "सदाबहार कहानी। क्या तेज़ दौड़ना ही जीत की गारंटी है? या निरंतरता ज़रूरी है?",
+                pages: [
+                    { title: "दौड़ की चुनौती", text: "खरगोश को अपनी चाल पर घमंड था। उसने कछुए को दौड़ के लिए ललकारा।", visual: "🐇💨🐢" },
+                    { title: "शुरुआत", text: "खरगोश बहुत तेज़ी से भागा और कछुआ धीरे-धीरे चलता रहा।", visual: "🏁🐇...🐢" },
+                    { title: "खरगोश सो गया", text: "'कछुआ तो बहुत पीछे है, थोड़ा सो लेता हूँ,' खरगोश ने सोचा और पेड़ नीचे सो गया।", visual: "🌳🐇💤" },
+                    { title: "कछुए की जीत", text: "कछुआ बिना रुके चलता रहा और फिनिश लाइन पार कर गया। खरगोश हार गया।", visual: "🏆🐢🎉" },
+                    { title: "सीख", text: "धीमे मगर लगातार चलने वाला ही रेस जीतता है (Slow and steady wins the race).", visual: "🎓✨" }
+                ]
+            }
+        ];
+
+        // --- DOM ELEMENTS ---
+        const appContainer = document.getElementById('app-container');
+        const searchInput = document.getElementById('searchInput');
+
+        // --- INITIAL RENDER ---
+        let activeCategory = 'all';
+        renderDashboard();
+        lucide.createIcons();
+
+        // --- DASHBOARD FUNCTIONS ---
+
+        function renderDashboard() {
+            const filteredStories = stories.filter(story => {
+                const matchesCategory = activeCategory === 'all' || story.category === activeCategory;
+                const matchesSearch = story.title.toLowerCase().includes(searchInput.value.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            const heroHTML = `
+                <!-- Hero Section -->
+                <div class="relative bg-gradient-to-r from-indigo-600 to-purple-600 text-white overflow-hidden">
+                    <div class="absolute inset-0 opacity-20">
+                        <div class="absolute top-0 left-0 w-40 h-40 bg-white rounded-full mix-blend-overlay filter blur-xl animate-blob"></div>
+                        <div class="absolute top-0 right-0 w-40 h-40 bg-yellow-300 rounded-full mix-blend-overlay filter blur-xl animate-blob animation-delay-2000"></div>
+                    </div>
+                    <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between">
+                        <div class="md:w-1/2 mb-8 md:mb-0">
+                            <span class="bg-indigo-500 bg-opacity-50 text-indigo-100 px-3 py-1 rounded-full text-sm font-semibold mb-4 inline-block">आज की खास कहानी</span>
+                            <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">शरारती बंदर मोनू 🐒</h1>
+                            <p class="text-indigo-100 text-lg mb-8 max-w-lg">एक मस्तीखोर बंदर और जंगल के जानवरों की मजेदार और सीख देने वाली कहानी। क्या मोनू सुधरेगा?</p>
+                            <button onclick="openStory(1)" class="bg-yellow-400 hover:bg-yellow-500 text-indigo-900 font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105 flex items-center gap-2">
+                                <i data-lucide="play-circle"></i> अभी पढ़ें
+                            </button>
+                        </div>
+                        <div class="md:w-1/2 flex justify-center">
+                            <div class="text-9xl animate-bounce filter drop-shadow-2xl">🐒</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories (Mobile Scrollable) -->
+                <div class="max-w-7xl mx-auto px-4 mt-8">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        <i data-lucide="compass" class="text-indigo-600"></i> श्रेणियाँ (Categories)
+                    </h2>
+                    <div class="flex gap-4 overflow-x-auto pb-4 md:grid md:grid-cols-4 md:gap-6 hide-scrollbar">
+                        <button onclick="filterStories('all')" class="${activeCategory === 'all' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600'} flex-shrink-0 px-6 py-3 rounded-xl shadow-sm border border-slate-100 font-bold whitespace-nowrap transition hover:shadow-md">
+                            🏠 सभी कहानियाँ
+                        </button>
+                        <button onclick="filterStories('Moral')" class="${activeCategory === 'Moral' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600'} flex-shrink-0 px-6 py-3 rounded-xl shadow-sm border border-slate-100 font-bold whitespace-nowrap transition hover:shadow-md">
+                            🧠 नैतिक (Moral)
+                        </button>
+                        <button onclick="filterStories('Adventure')" class="${activeCategory === 'Adventure' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600'} flex-shrink-0 px-6 py-3 rounded-xl shadow-sm border border-slate-100 font-bold whitespace-nowrap transition hover:shadow-md">
+                            🚀 रोमांचक
+                        </button>
+                        <button onclick="filterStories('Fantasy')" class="${activeCategory === 'Fantasy' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600'} flex-shrink-0 px-6 py-3 rounded-xl shadow-sm border border-slate-100 font-bold whitespace-nowrap transition hover:shadow-md">
+                            ✨ जादुई
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            let storiesGrid = `
+                <div class="max-w-7xl mx-auto px-4 mt-8 mb-16">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        <i data-lucide="book" class="text-indigo-600"></i> चुनिंदा कहानियाँ
+                    </h2>
+                    
+                    ${filteredStories.length === 0 ? 
+                        `<div class="text-center py-20 text-slate-400">
+                            <i data-lucide="frown" class="w-16 h-16 mx-auto mb-4"></i>
+                            <p class="text-xl">कोई कहानी नहीं मिली। कुछ और खोजें!</p>
+                        </div>` 
+                        : 
+                        `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            ${filteredStories.map(story => `
+                                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-100 overflow-hidden card-hover flex flex-col h-full cursor-pointer" onclick="openStory(${story.id})">
+                                    <div class="${story.color} h-48 flex items-center justify-center relative overflow-hidden">
+                                        <div class="text-6xl transform transition duration-500 hover:scale-110">${story.emoji}</div>
+                                        <div class="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-slate-600 flex items-center gap-1">
+                                            <i data-lucide="clock" class="w-3 h-3"></i> ${story.readTime}
+                                        </div>
+                                    </div>
+                                    <div class="p-6 flex-grow flex flex-col">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">${story.category}</span>
+                                        </div>
+                                        <h3 class="text-xl font-bold text-slate-800 mb-2">${story.title}</h3>
+                                        <p class="text-slate-600 text-sm mb-4 line-clamp-2">${story.desc}</p>
+                                        <div class="mt-auto">
+                                            <button class="w-full py-2 rounded-lg border-2 border-indigo-100 text-indigo-600 font-bold hover:bg-indigo-50 transition flex items-center justify-center gap-2">
+                                                पढ़ना शुरू करें <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>`
+                    }
+                </div>
+            `;
+
+            appContainer.innerHTML = heroHTML + storiesGrid;
+            lucide.createIcons();
+            window.scrollTo(0, 0);
+        }
+
+        function handleSearch() {
+            renderDashboard();
+        }
+
+        function filterStories(category) {
+            activeCategory = category;
+            renderDashboard();
+        }
+
+        function showDashboard() {
+            renderDashboard();
+        }
+
+
+        // --- READER LOGIC (Embedded Interactive Book) ---
+
+        function openStory(id) {
+            const story = stories.find(s => s.id === id);
+            if (!story) return;
+
+            let currentPage = 0;
+            const totalPages = story.pages.length;
+
+            const readerHTML = `
+                <div class="fixed inset-0 bg-slate-100 z-50 flex flex-col fade-in overflow-hidden">
+                    <!-- Reader Header -->
+                    <div class="bg-white px-4 py-3 shadow-sm flex items-center justify-between z-10">
+                        <button onclick="showDashboard()" class="flex items-center gap-2 text-slate-600 hover:text-indigo-600 font-bold transition">
+                            <i data-lucide="arrow-left"></i> वापस (Back)
+                        </button>
+                        <h2 class="text-lg font-bold text-slate-800 hidden sm:block">${story.title}</h2>
+                        <div class="text-slate-500 font-bold text-sm">
+                            Page <span id="r-page-num">1</span> / ${totalPages}
+                        </div>
+                    </div>
+
+                    <!-- Reader Content -->
+                    <div class="flex-grow flex items-center justify-center p-4 relative overflow-y-auto">
+                        
+                        <!-- Background Decorations -->
+                        <div class="absolute top-10 left-10 text-6xl opacity-5 pointer-events-none">${story.emoji}</div>
+                        <div class="absolute bottom-10 right-10 text-6xl opacity-5 pointer-events-none">📖</div>
+
+                        <div class="w
