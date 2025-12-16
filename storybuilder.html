@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>कथा World - Story Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Baloo 2', cursive; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 p-8">
+
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-200">
+            <h1 class="text-3xl font-bold text-indigo-700 mb-6 flex items-center gap-2">
+                <i data-lucide="pen-tool"></i> नई कहानी बनाएँ (Story Builder)
+            </h1>
+
+            <!-- Basic Info -->
+            <div class="space-y-4 mb-8">
+                <h2 class="text-xl font-bold border-b pb-2">1. कहानी की जानकारी</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold mb-1">कहानी का नाम (Title)</label>
+                        <input type="text" id="s-title" placeholder="जैसे: चालाक लोमड़ी" class="w-full p-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">श्रेणी (Category)</label>
+                        <select id="s-category" class="w-full p-2 border rounded-lg">
+                            <option value="Moral">Moral (नैतिक)</option>
+                            <option value="Adventure">Adventure (रोमांचक)</option>
+                            <option value="Fantasy">Fantasy (जादुई)</option>
+                            <option value="Fables">Fables (लोककथा)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">मुख्य इमोजी (Main Emoji)</label>
+                        <input type="text" id="s-emoji" placeholder="🦊" class="w-full p-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">पढ़ने का समय (Read Time)</label>
+                        <input type="text" id="s-time" placeholder="4 min" class="w-full p-2 border rounded-lg">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold mb-1">छोटी डीटेल्स (Short Description)</label>
+                        <input type="text" id="s-desc" placeholder="एक लोमड़ी जिसे अंगूर नहीं मिले..." class="w-full p-2 border rounded-lg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pages -->
+            <div class="space-y-4 mb-8">
+                <div class="flex justify-between items-center border-b pb-2">
+                    <h2 class="text-xl font-bold">2. कहानी के पन्ने (Pages)</h2>
+                    <button onclick="addPageField()" class="text-sm bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-bold hover:bg-indigo-200">+ पन्ना जोड़ें</button>
+                </div>
+                
+                <div id="pages-container" class="space-y-4">
+                    <!-- Dynamic Page Fields -->
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <button onclick="generateJSON()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg transition transform hover:scale-105 mb-6">
+                ✨ कोड जेनरेट करें (Generate Code)
+            </button>
+
+            <!-- Output -->
+            <div id="output-section" class="hidden">
+                <h3 class="font-bold mb-2 text-slate-600">इस कोड को कॉपी करें (Copy This):</h3>
+                <textarea id="output-code" class="w-full h-64 p-4 bg-slate-900 text-green-400 font-mono text-sm rounded-xl" readonly></textarea>
+                <p class="text-sm text-slate-500 mt-2">
+                    निर्देश: अपनी Main फाइल (index.html) खोलें। "const stories = [" ढूँढें और इस कोड को लिस्ट में सबसे ऊपर पेस्ट कर दें।
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Add first page by default
+        window.onload = function() {
+            addPageField();
+        };
+
+        function addPageField() {
+            const container = document.getElementById('pages-container');
+            const index = container.children.length + 1;
+            
+            const div = document.createElement('div');
+            div.className = "bg-slate-50 p-4 rounded-lg border border-slate-200 relative";
+            div.innerHTML = `
+                <span class="absolute top-2 right-2 text-xs font-bold text-slate-400">Page ${index}</span>
+                <div class="grid grid-cols-1 gap-3">
+                    <div>
+                        <input type="text" class="page-title w-full p-2 border rounded text-sm" placeholder="पन्ने का शीर्षक (Page Title)">
+                    </div>
+                    <div>
+                        <textarea class="page-text w-full p-2 border rounded text-sm h-20" placeholder="कहानी का टेक्स्ट..."></textarea>
+                    </div>
+                    <div>
+                        <input type="text" class="page-visual w-full p-2 border rounded text-sm" placeholder="इमोजी दृश्य (Visual Emojis) जैसे: 🦊🍇❌">
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function generateJSON() {
+            const id = Date.now(); // Unique ID based on time
+            const title = document.getElementById('s-title').value;
+            const category = document.getElementById('s-category').value;
+            const emoji = document.getElementById('s-emoji').value || '📖';
+            const time = document.getElementById('s-time').value || '3 min';
+            const desc = document.getElementById('s-desc').value;
+
+            // Get colors based on category
+            let color = "bg-indigo-100";
+            let accent = "text-indigo-600";
+            if(category === 'Moral') { color = "bg-green-100"; accent = "text-green-600"; }
+            if(category === 'Adventure') { color = "bg-blue-100"; accent = "text-blue-600"; }
+            if(category === 'Fantasy') { color = "bg-purple-100"; accent = "text-purple-600"; }
+            if(category === 'Fables') { color = "bg-orange-100"; accent = "text-orange-600"; }
+
+            // Get Pages
+            const pageDivs = document.querySelectorAll('#pages-container > div');
+            const pages = [];
+            pageDivs.forEach(div => {
+                pages.push({
+                    title: div.querySelector('.page-title').value,
+                    text: div.querySelector('.page-text').value,
+                    visual: div.querySelector('.page-visual').value
+                });
+            });
+
+            // Construct Object
+            const storyObj = {
+                id: id,
+                title: title,
+                category: category,
+                readTime: time,
+                emoji: emoji,
+                color: color,
+                accent: accent,
+                desc: desc,
+                pages: pages
+            };
+
+            // Convert to string and format
+            const jsonString = JSON.stringify(storyObj, null, 4);
+            const finalString = `
+    // नयी कहानी यहाँ से शुरू
+    ${jsonString},
+            `;
+
+            document.getElementById('output-section').classList.remove('hidden');
+            document.getElementById('output-code').value = finalString;
+        }
+    </script>
+</body>
+</html>
+
+
